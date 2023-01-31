@@ -1,0 +1,73 @@
+version: "3"
+
+services:
+
+  mariadb:
+    image: mariadb:10
+    ports:
+      - 3306:3306
+    volumes:
+      - ./volumes/mysql/data:/var/lib/mysql:rw
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
+      - ./mysql/dump.sql:/docker-entrypoint-initdb.d/dump.sql:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: app123
+
+  adminer:
+    image: adminer:4.8.1
+    depends_on:
+      - mariadb
+    ports:
+      - 8081:8080
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
+
+  zookeeper:
+    image: bitnami/zookeeper:3.7.1
+    ports:
+      - 2181:2181
+    volumes:
+      - ./volumes/zookeeper/data:/bitnami
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: yes
+
+  kafka:
+    image: bitnami/kafka:3.3.2
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+      - 9093:9093
+    volumes:
+      - ./volumes/kafka/data:/bitnami
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      ALLOW_PLAINTEXT_LISTENER: yes
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:3.26.0
+    depends_on:
+      - kafka
+    ports:
+      - 9000:9000
+    environment:
+      KAFKA_BROKERCONNECT: kafka:9092
+
+#  maxwell:
+#    image: zendesk/maxwell:v1.39.4
+#    depends_on:
+#      - mariadb
+#      - kafka
+#    environment:
+#      USER: root
+#      PASSWORD: root
+
+networks:
+  backend:
+    driver: bridge
