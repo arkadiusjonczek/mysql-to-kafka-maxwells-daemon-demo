@@ -2,6 +2,14 @@
 
 https://maxwells-daemon.io/ prototyping 🔧
 
+## start / stop
+
+```bash
+docker-compose up -d
+docker-compose logs -f
+docker-compose down
+```
+
 ## producer=stdout
 
 ```bash
