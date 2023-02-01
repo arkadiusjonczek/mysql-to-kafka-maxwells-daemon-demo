@@ -2,6 +2,8 @@
 
 https://maxwells-daemon.io/ prototyping 🔧
 
+![Maxwell Architecture](maxwell.drawio.png)
+
 ## Docker
 
 ### Start & Stop
