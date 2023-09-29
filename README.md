@@ -1,6 +1,6 @@
 # maxwell-mysql-kafka-example
 
-https://maxwells-daemon.io/ prototyping 🔧
+MySQL to Kafka Change Data Capture Demo with https://maxwells-daemon.io/
 
 ![Maxwell Architecture](maxwell.drawio.png)
 
@@ -14,7 +14,7 @@ docker-compose logs -f
 docker-compose down
 ```
 
-## Maxwells Daemon
+## Maxwell's Daemon
 
 ### producer=stdout
 
@@ -43,10 +43,11 @@ kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic jobs
 
 Create topic with 20 partitions. (Maxwell will create topic with only 1 partition)
 
-## PHP Producer for MySQL
+## Go Producer for MySQL
 
-Add 1000 records to mysql to check kafka partition rotation.
+Add 100 records to mysql to check kafka partition rotation.
 
 ```bash
-docker run -it --rm --network maxwell-mysql-kafka-example_default -v $PWD/producer/producer.php:/app/producer.php jonczek/php-cli php /app/producer.php
+go run producer/producer.go
 ```
+
